@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta https-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .speech {
+            border: 1px solid #DDD;
+            width: 300px;
+            padding: 0;
+            margin: 0
+        }
+
+        .speech input {
+            border: 0;
+            width: 240px;
+            display: inline-block;
+            height: 30px;
+        }
+
+        .speech img {
+            float: right;
+            width: 30px;
+            padding-bottom: 30px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- CSS Styles -->
+
+
+    <!-- Search Form -->
+    <form id="labnol">
+        <div class="speech">
+            <input type="text" name="q" id="transcript" placeholder="Speak" />
+            <img id="micro" onclick="startDictation()" src="off.png" />
+        </div>
+    </form>
+
+    <!-- HTML5 Speech Recognition API -->
+    <script>
+
+        function startDictation() {
+
+            
+            if (window.hasOwnProperty('webkitSpeechRecognition')) {
+                var micro=document.getElementById("micro");
+               
+                var recognition = new webkitSpeechRecognition();
+
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.lang = "en-US";
+                recognition.start();
+                micro.setAttribute("src","on.png");
+                recognition.onresult = function (e) {
+                    
+                    document.getElementById('transcript').value
+                        = e.results[0][0].transcript;
+                    recognition.stop();
+                    micro.setAttribute("src","off.png");
+                };
+
+                recognition.onerror = function (e) {
+                    recognition.stop();
+                    micro.removeEventListener('click',micro);
+                }
+
+            }
+        }
+        
+    </script>
+</body>
+
+</html>
