@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+ 
+    </head>
+    <body>
+ 
+    <div id="gamepadPrompt"></div>
+    <div id="gamepadDisplay"></div>
+ 
+    <script>
+    var hasGP = false;
+    var repGP;
+ 
+    function canGame() {
+        return "getGamepads" in navigator;
+    }
+ 
+    function reportOnGamepad() {
+        var gp = navigator.getGamepads()[0];
+        var html = "";
+            html += "id: "+gp.id+"<br/>";
+
+            if(gp.buttons[4].pressed){
+                alert("You ahve presses L1");
+            }
+            if(gp.buttons[5].pressed){
+                alert("You have presses R1");
+            }
+            if(gp.buttons[6].pressed){
+                alert("You have pressed L2");
+            }
+            if(gp.buttons[7].pressed){
+                alert("You have presses R2");
+            }
+            // else{
+            //     alert("Press only L1,L2,R1,R2");
+            // }
+ 
+        // for(var i=4;i<8;i++) {
+        //     // html+= "Button "+(i+1)+": ";
+        //     // if(gp.buttons[i].pressed) html+= " pressed";
+        //     // html+= "<br/>";
+
+        //     if(gp.buttons[4].pressed){
+        //         alert("You ahve presses L1");
+        //     }
+        //     else if(gp.buttons[5].pressed){
+        //         alert("You have presses R1");
+        //     }
+        //     else if(gp.buttons[6].pressed){
+        //         alert("You have pressed L2");
+        //     }
+        //     else if(gp.buttons[7].pressed){
+        //         alert("You have presses R2");
+        //     }
+        //     else{
+        //         alert("Press only L1,L2,R1,R2");
+        //     }
+        // }
+ 
+ 
+        $("#gamepadDisplay").html(html);
+    }
+ 
+    $(document).ready(function() {
+ 
+        if(canGame()) {
+ 
+            var prompt = "To begin using your gamepad, connect it and press any button!";
+            $("#gamepadPrompt").text(prompt);
+ 
+            $(window).on("gamepadconnected", function() {
+                hasGP = true;
+                $("#gamepadPrompt").html("Gamepad connected!");
+                console.log("connection event");
+                repGP = window.setInterval(reportOnGamepad,100);
+                // reportOnGamepad();
+            });
+ 
+            $(window).on("gamepaddisconnected", function() {
+                console.log("disconnection event");
+                $("#gamepadPrompt").text(prompt);
+                window.clearInterval(repGP);
+            });
+ 
+            //setup an interval for Chrome
+            var checkGP = window.setInterval(function() {
+                console.log('checkGP');
+                if(navigator.getGamepads()[0]) {
+                    if(!hasGP) $(window).trigger("gamepadconnected");
+                    window.clearInterval(checkGP);
+                }
+            }, 500);
+        }
+ 
+    });
+    </script>
+    </body>
+</html>
